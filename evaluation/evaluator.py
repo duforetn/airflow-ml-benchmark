@@ -10,8 +10,8 @@ from datetime import datetime
 class Evaluator():
 
     def __init__(self, db: str):
-        self.result_dir = 'results/'
-        self.result_files = os.listdir(self.result_dir)
+        self.result_dir = '/results/'
+        self.result_files = [f for f in os.listdir(self.result_dir) if ".csv" in f]
         self.db = db
         self.client = InfluxDBClient('localhost', 8086, 'root', 'root', self.db)
         
@@ -33,7 +33,7 @@ class Evaluator():
 
     def evaluate_results(self):
         for file in self.result_files:
-            df = pd.read_csv(os.path.join(self.result_dir, file))
+            df = pd.read_csv(os.path.join(self.result_dir, file), engine='python')
             res = self.evaluate_metric(df)
             self.write_db_results(file.replace('.csv', ''), res)    
 

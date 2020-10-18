@@ -12,9 +12,12 @@ class Regressor():
     def __init__(self, model_name: str, n_batch: int = 5):
         self.model_name = model_name
         self.n_batch = int(n_batch)
-        self.data_dir = 'data'
-        self.data_files = sorted(os.listdir(self.data_dir))[:-self.n_batch]
-        self.result_file = 'results/' + self.model_name + '.csv'
+        self.data_dir = '/data'
+        self.result_dir = '/results'
+        self.data_files = sorted([f for f in os.listdir(self.data_dir) if ".csv" in f])
+        if len(self.data_files) > self.n_batch:
+            self.data_files = self.data_files[:-self.n_batch]
+        self.result_file = os.path.join(self.result_dir, self.model_name + '.csv')
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -32,7 +35,7 @@ class Regressor():
     def load_data(self):
         full_df = pd.DataFrame()
         for file in self.data_files:
-            full_df = full_df.append(pd.read_csv(os.path.join(self.data_dir, file)))
+            full_df = full_df.append(pd.read_csv(os.path.join(self.data_dir, file), engine='python'))
 
         y = full_df['y']
         X = full_df.drop(columns='y')
@@ -48,6 +51,7 @@ class Regressor():
         y_tilde = self.model.predict(self.X_test)
         result_df = pd.DataFrame(np.array(y_tilde), columns = ["y_predict"])
         result_df['y'] = np.array(self.y_test)
+        os.makedirs(self.result_dir, exist_ok=True)
         result_df.to_csv(self.result_file)
 
 @click.command()

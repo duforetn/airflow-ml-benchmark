@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 import click
-
+import os
 
 class Generator():
 
@@ -10,7 +10,8 @@ class Generator():
         self.n_vars = 10
         self.batch_len = 100
         self.batch_id = batch_id
-        self.result_file = 'data/' + str(self.batch_id).zfill(3) + '.csv'
+        self.data_dir = "/data"
+        self.result_file = os.path.join(self.data_dir, str(self.batch_id).zfill(3) + '.csv')
         self.noise_var = .2
         self.betas = np.array([3, 4, 0, 0, 1, 0, 2, 0, 10, 5])
         self.second_order = [[0, 2],[2, 6], [5, 7], [8, 9]]
@@ -22,6 +23,7 @@ class Generator():
         return y
 
     def write_df(self):
+        os.makedirs(self.data_dir, exist_ok=True)
         df_x, df_y = [], []
         for row in range(self.batch_len):
             x = np.random.rand(self.n_vars)
