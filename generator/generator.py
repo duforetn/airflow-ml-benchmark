@@ -3,15 +3,15 @@ import numpy as np
 import random
 import click
 import os
+from time import time
 
 class Generator():
 
-    def __init__(self, batch_id):
+    def __init__(self, data_dir):
         self.n_vars = 10
         self.batch_len = 100
-        self.batch_id = batch_id
-        self.data_dir = "/data"
-        self.result_file = os.path.join(self.data_dir, str(self.batch_id).zfill(3) + '.csv')
+        self.data_dir = data_dir
+        self.result_file = os.path.join(self.data_dir, str(int(time())) + '.csv')
         self.noise_var = .2
         self.betas = np.array([3, 4, 0, 0, 1, 0, 2, 0, 10, 5])
         self.second_order = [[0, 2],[2, 6], [5, 7], [8, 9]]
@@ -36,9 +36,9 @@ class Generator():
         df.to_csv(self.result_file, index = False)
 
 @click.command()
-@click.argument("batch_id")
-def generate(batch_id: int):
-    gen = Generator(batch_id)
+@click.argument('data_dir')
+def generate(data_dir):
+    gen = Generator(data_dir)
     gen.write_df()
 
 if __name__ == '__main__':

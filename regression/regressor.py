@@ -9,11 +9,11 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 class Regressor():
 
-    def __init__(self, model_name: str, n_batch: int = 5):
+    def __init__(self, model_name: str, n_batch: int = 5, data_dir: str = "data", result_dir: str = 'result'):
         self.model_name = model_name
         self.n_batch = int(n_batch)
-        self.data_dir = '/data'
-        self.result_dir = '/results'
+        self.data_dir = data_dir
+        self.result_dir = result_dir
         self.data_files = sorted([f for f in os.listdir(self.data_dir) if ".csv" in f])
         if len(self.data_files) > self.n_batch:
             self.data_files = self.data_files[:-self.n_batch]
@@ -57,8 +57,10 @@ class Regressor():
 @click.command()
 @click.argument("model_name")
 @click.argument("n_batch")
-def regress(model_name: str, n_batch: int):
-    reg = Regressor(model_name, n_batch)
+@click.argument("data_dir")
+@click.argument("result_dir")
+def regress(model_name: str, n_batch: int, data_dir: str, result_dir: str):
+    reg = Regressor(model_name, n_batch, data_dir, result_dir)
     reg.evaluate_results()
 
 if __name__ == '__main__':

@@ -11,11 +11,12 @@ pip install \
 AIRFLOW
 
 ```
+export AIRFLOW_HOME=~/airflow
 airflow initdb
 # Run the webserver if you want to use it
 airflow webserver -p 8080
 # Run the scheduler
-airflow scheduler
+airflow scheduler 
 ```
 
 ![](DAG.png)
@@ -25,4 +26,12 @@ INFLUXDB
 ```
 docker pull influxdb
 docker run -p 8086:8086       -v $PWD:/var/lib/influxdb       influxdb
+```
+
+Also
+```
+cp workflow_dag.py $AIRFLOW_HOME
+export PYTHONPATH="$PWD"
+export DATADIR="$PWD"
+export RESULTDIR="$PWD"
 ```

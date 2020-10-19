@@ -9,8 +9,8 @@ from datetime import datetime
 
 class Evaluator():
 
-    def __init__(self, db: str):
-        self.result_dir = '/results/'
+    def __init__(self, result_dir: str, db: str):
+        self.result_dir = result_dir
         self.result_files = [f for f in os.listdir(self.result_dir) if ".csv" in f]
         self.db = db
         self.client = InfluxDBClient('localhost', 8086, 'root', 'root', self.db)
@@ -38,9 +38,10 @@ class Evaluator():
             self.write_db_results(file.replace('.csv', ''), res)    
 
 @click.command()
+@click.argument("result_dir")
 @click.argument("db")
-def evaluate(db: str):
-    eval = Evaluator(db)
+def evaluate(result_dir: str, db: str):
+    eval = Evaluator(result_dir, db)
     eval.evaluate_results()
 
 if __name__ == '__main__':
